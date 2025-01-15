@@ -22,6 +22,18 @@ class AuthController extends Controller
     public function store(Request $request)
     {
         //
+        $attributes = $request->validate([
+            'email' => ['required', 'email'],
+            'password' => ['required', 'min:3']
+        ]);
+
+        if(auth()->attempt(['email' => $request['email'], 'password' => $request['password']])) {
+            return redirect('/')->with('success', 'Success to sign-in. Welcome back!'); 
+        }
+
+        else {
+            return redirect('/')->with('fail', 'Fail to sign-in. Credentials does not match. Please try again.');
+        }
     }
 
     /**
