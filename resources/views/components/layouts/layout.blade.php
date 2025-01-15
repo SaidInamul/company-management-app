@@ -25,6 +25,15 @@
     <nav class="bg-orange-500 border-gray-200 dark:bg-orange-500 mb-10">
         <div class="max-w-6xl flex flex-wrap items-center justify-between mx-auto p-6">
             <h1 class="font-semibold text-lg text-white">Company Manangement System</h1>
+            @auth
+                <form action="/logout" method="POST">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="py-2 px-3 inline-flex items-center gap-x-2 text-xs rounded-lg border border-transparent text-white hover:bg-orange-600 focus:outline-none focus:bg-orange-600 transition-all duration-300 uppercase">
+                        Logout
+                    </button>
+                </form>
+            @endauth
         </div>
     </nav>
 

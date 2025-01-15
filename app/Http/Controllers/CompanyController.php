@@ -12,6 +12,11 @@ class CompanyController extends Controller
     public function index()
     {
         //
+        if (auth()->check()) {
+            return view('company.index');
+        } else {
+            return view('auth.login');
+        }
     }
 
     /**

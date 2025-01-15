@@ -14,6 +14,11 @@ class AuthController extends Controller
     public function create()
     {
         //
+        if (auth()->check()) {
+            return view('company.index');
+        } else {
+            return view('auth.login');
+        }
     }
 
     /**
@@ -28,7 +33,8 @@ class AuthController extends Controller
         ]);
 
         if(auth()->attempt(['email' => $request['email'], 'password' => $request['password']])) {
-            return redirect('/')->with('success', 'Success to sign-in. Welcome back!'); 
+            $request->session()->regenerate();
+            return redirect('/index')->with('success', 'Success to sign-in. Welcome back!'); 
         }
 
         else {
@@ -66,5 +72,8 @@ class AuthController extends Controller
     public function destroy(User $user)
     {
         //
+        auth()->logout();
+
+        return redirect('/')->with('success', 'Success to log-out.');
     }
 }
