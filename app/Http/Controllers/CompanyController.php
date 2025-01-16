@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Requests\CompanyRequest;
 use Illuminate\Database\QueryException;
+use App\Http\Requests\UpdateCompanyRequest;
 use Intervention\Image\Laravel\Facades\Image;
 
 class CompanyController extends Controller
@@ -92,14 +93,68 @@ class CompanyController extends Controller
     public function edit(string $id)
     {
         //
+        $company = Company::find($id);
+
+        if(!$company) {
+            return redirect('/index')->with('fail', 'Fail to show go the site. Please try again later');
+        }
+
+        return view('company.edit', ['company' => $company]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateCompanyRequest $request, string $id)
     {
         //
+        $request['name'] = strip_tags($request['name']);
+        $request['email'] = strip_tags($request['email']);
+        $request['website'] = strip_tags($request['website']);
+
+        $request['website_link'] = $request['website'];
+        unset($request['website']);
+
+        $company = Company::find($id);
+
+        DB::beginTransaction();
+
+        try {
+
+            $company->update($request->except('logo'));
+
+            if ($request->hasFile('logo')) {
+
+                $file = $request->file('logo');
+                $fileName = $company->id . '-' .$company->name . '.' . $file->getClientOriginalExtension();
+                $destinationPath = storage_path('app/public');
+
+                if (!($company->logo === 'default-logo.png')) {
+                    $oldFilePath = $destinationPath . '/' . $company->logo;
+                    if (file_exists($oldFilePath)) {
+                        unlink($oldFilePath);
+                    }
+                }
+
+                $file->move($destinationPath, $fileName);
+                $company->update(['logo' => $fileName]);
+            }
+
+            DB::commit();
+
+            return redirect('/index')->with('success', 'The company ' . $company->name . ' updated successfully.');
+
+        } catch (QueryException $e) {
+
+            DB::rollBack();
+            return redirect('/index/edit/' . $company->id)->with('fail', 'Database error: ' . $e->getMessage());
+
+        } catch (Exception $e) {
+
+            DB::rollBack();
+            return redirect('/index/edit/' . $company->id)->with('fail', 'Something went wrong: ' . $e->getMessage());
+
+        }
     }
 
     /**
@@ -108,7 +163,18 @@ class CompanyController extends Controller
     public function destroy(string $id)
     {
         //
-        Company::destroy($id);
+        $company = Company::find($id);
+        $destinationPath = storage_path('app/public');
+
+        if (!($company->logo === 'default-logo.png')) {
+            $oldFilePath = $destinationPath . '/' . $company->logo;
+            if (file_exists($oldFilePath)) {
+                unlink($oldFilePath);
+            }
+        }
+        
+        $company->delete();
+        
         return redirect('/index')->with('success', 'Company has been deleted.');
     }
 }
