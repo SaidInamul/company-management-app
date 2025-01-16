@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use Exception;
 use App\Models\Company;
 use Illuminate\Http\Request;
-use Intervention\Image\Facades\Image;
+use Illuminate\Support\Facades\DB;
+use App\Http\Requests\CompanyRequest;
+use Illuminate\Database\QueryException;
+use Intervention\Image\Laravel\Facades\Image;
 
 class CompanyController extends Controller
 {
@@ -36,29 +40,42 @@ class CompanyController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
-    {
-        //
-        $attributes = $request->validate([
-            'name' => ['required', 'min:3'],
-            'email' => ['required', 'email'],
-            'website' => ['required', 'url'],
-            'logo' => ['nullable', 'mimes:png,jpg,jpeg', 'max:2048', function ($attribute, $value, $fail) {
-                // Check if a file is provided
-                if ($value) {
-                    // Get image dimensions using Intervention Image
-                    $image = Image::make($value->getPathname());
-                    $width = $image->width();
-                    $height = $image->height();
-    
-                    // Check if dimensions meet the minimum requirement
-                    if ($width < 100 || $height < 100) {
-                        $fail('The ' . $attribute . ' must be at least 100x100 pixels.');
-                    }
-                }
-            }],
-        ]);
-        dd($attributes);
+    public function store(CompanyRequest $request)
+    {   
+        $request['website_link'] = $request['website']; 
+        unset($request['website']);
+        
+        DB::beginTransaction();
+
+        try {
+
+            $company = Company::create($request->except('logo'));
+
+            if ($request->hasFile('logo')) {
+                
+                $file = $request->file('logo');
+                $fileName = $company->id . '-' .$company->name . '.' . $file->getClientOriginalExtension();
+                $destinationPath = storage_path('app/public');
+                $file->move($destinationPath, $fileName);
+
+                $company->update(['logo' => $fileName]);
+            }
+
+            DB::commit();
+
+            return redirect('/index')->with('success', 'New company created successfully.');
+
+        } catch (QueryException $e) {
+
+            DB::rollBack();
+            return redirect('/index/create')->with('fail', 'Database error: ' . $e->getMessage());
+
+        } catch (Exception $e) {
+
+            DB::rollBack();
+            return redirect('/index/create')->with('fail', 'Something went wrong: ' . $e->getMessage());
+
+        }
     }
 
     /**
@@ -91,6 +108,7 @@ class CompanyController extends Controller
     public function destroy(string $id)
     {
         //
-        dd($id);
+        Company::destroy($id);
+        return redirect('/index')->with('success', 'Company has been deleted.');
     }
 }

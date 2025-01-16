@@ -15,7 +15,7 @@ class AuthController extends Controller
     {
         //
         if (auth()->check()) {
-            return view('company.index');
+            return redirect('/index');
         } else {
             return view('auth.login');
         }

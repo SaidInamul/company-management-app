@@ -1,14 +1,18 @@
 <x-layouts.layout>
     <div class="max-w-6xl flex flex-col space-y-3 mx-auto p-6">
         <div class="flex justify-between items-center mb-14">
-            <h1 class="font-medium text-2xl">Create New Company</h1>
+            <div class="flex space-x-4 items-center">
+                <x-bladewind.button.circle color="orange" icon="arrow-left" size="tiny" onclick="window.location.href='{{ url('/index') }}'"/>
+                <h1 class="font-medium text-2xl">Create New Company</h1>
+            </div>
+            
             <a href="{{ route('index.store') }}"
                 class="py-3 px-4 inline-flex items-center bg-orange-500 gap-x-2 text-sm rounded-lg border border-transparent text-white hover:bg-orange-600 focus:outline-none focus:bg-orange-600 transition-all duration-300 uppercase"
                 onclick="event.preventDefault(); document.getElementById('create-form').submit();">
                     Save
             </a>
         </div>
-        <form id="create-form" action="{{ route('index.store') }}" method="POST">
+        <form id="create-form" action="{{ route('index.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
             <div class="w-full grid grid-cols-2 gap-y-10 gap-x-4 items-center">
