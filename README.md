@@ -1,3 +1,15 @@
+## Example App Interface:
+<img width="1440" alt="Image" src="https://github.com/user-attachments/assets/aa1945d0-bc42-44a3-a328-10feb2a3c3eb" />
+<img width="1440" alt="Image" src="https://github.com/user-attachments/assets/fa280ea8-871f-4770-ac40-841293d3cf9c" />
+<img width="1440" alt="Image" src="https://github.com/user-attachments/assets/6bc131b0-8891-44c7-9820-d8201d074477" />
+<img width="1440" alt="Image" src="https://github.com/user-attachments/assets/18f9f7e3-a5a8-47ee-91fe-7928bcb93e17" />
+<img width="1440" alt="Image" src="https://github.com/user-attachments/assets/371d85e8-44ce-4ebb-b740-05a3f9039542" />
+<img width="1440" alt="Image" src="https://github.com/user-attachments/assets/7b3318d6-0be5-4070-b397-c3ed10bef136" />
+<img width="1440" alt="Image" src="https://github.com/user-attachments/assets/e286791c-4937-424e-9fb9-c74fdcee708f" />
+<img width="1464" alt="Image" src="https://github.com/user-attachments/assets/8b08b72d-a0ae-41dd-9bfc-cbccc61b3c0e" />
+<img width="1440" alt="Image" src="https://github.com/user-attachments/assets/84872a3e-4dc3-456c-805b-87fbae450653" />
+
+
 <p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
 
 <p align="center">
